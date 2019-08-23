@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>商品退货管理</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+  <!-- 引入样式 -->
+<link rel="stylesheet" href="/resources/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/resources/css/public.css" media="all">
+</head>
+<body class="childrenBody">
+<form class="layui-form" id="searchForm" method="post">
+    <div class="layui-form-item">
+    	<div class="layui-inline">
+            <label class="layui-form-label" >供应商:</label>
+            <div class="layui-input-inline">
+                <select name="providerid" id="search_prividerid">
+                	
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label" >商品名称:</label>
+            <div class="layui-input-inline">
+                 <select name="goodsid" id="search_goodsid" lay-search="">
+                	
+                </select>
+            </div>
+        </div>
+         <div class="layui-inline">
+            <label class="layui-form-label" >开始时间:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="startTime" id="startTime" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+         <div class="layui-inline">
+            <label class="layui-form-label" >结束时间:</label>
+            <div class="layui-input-inline">
+                <input type="text" name="endTime" id="endTime" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item" style="text-align: center;">
+        <button type="button" class="layui-btn layui-btn-normal  layui-icon layui-icon-search" id="doSearch">查询</button>
+		<button type="reset" class="layui-btn layui-btn-warm  layui-icon layui-icon-refresh">重置</button>
+		
+    </div>
+</form>
+<table id="outportList" lay-filter="outportList"></table>
+<!--表格工具条-->
+<div  style="display: none;" id="tableToolBar">
+</div>
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+</body>
+<script type="text/javascript">
+    var tableIns;
+    layui.use(['form','layer','table','laydate'],function(){
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery,
+            laydate=layui.laydate,
+            table = layui.table;
+        
+        laydate.render({
+        	elem:"#startTime",
+        	type:'datetime'
+        });
+        laydate.render({
+        	elem:"#endTime",
+        	type:'datetime'
+        })
+        
+        //商品退货列表
+        tableIns = table.render({
+            elem: '#outportList',
+            url : '/outport/loadAllOutport',
+            cellMinWidth : 95,
+            toolbar: '#tableToolBar',
+            page : true,
+            height : "full-150",
+            id : "outportListTable",
+            cols : [ [
+                {field: 'id', title: '退货ID', minWidth:80, align:"center"},
+                {field: 'providername', title: '供应商', minWidth:100,width:120, align:"center"},
+                {field: 'goodsname', title: '商品名称',width:120, minWidth:100, align:"center"},
+                {field: 'size', title: '规格',width:120,  align:'center'},
+                {field: 'paytype', title: '支付类型',width:120, minWidth:100, align:"center"},
+                {field: 'outputtime', title: '退货时间',width:120, minWidth:100, align:"center"},
+                {field: 'operateperson', title: '操作员',width:180, minWidth:100, align:"center"},
+                {field: 'number', title: '退货数量',width:120, minWidth:100, align:"center"},
+                {field: 'outportprice', title: '退货价格',width:120, minWidth:100, align:"center"},
+                {field: 'remark', title: '备注',width:120, minWidth:100, align:"center"}
+                /* {title: '操作', minWidth:200, templet:'#outportListBar',fixed:"right",align:"center"} */
+            ] ]
+        });
+        
+        
+        //加载 查询条件里面的供应商下拉列表
+        $.get("/provider/loadAllAvailableProviderJson",function(obj){
+        	var search_providerid=$("#search_prividerid");
+        	var html="<option value=''>请选择供应商</option>"
+        	for(var i=0;i<obj.length;i++){
+        		html+="<option value="+obj[i].id+">"+obj[i].providername+"</option>"
+        	}
+        	search_providerid.html(html);
+        	form.render("select");
+        });
+        
+        //加载 查询条件里面的商品下拉列表
+        $.get("/goods/loadAllAvailableGoodsJson",function(obj){
+        	var search_goodsid=$("#search_goodsid");
+        	var goodsid=$("#goodsid");
+        	var html="<option value=''>请选择商品</option>"
+        	for(var i=0;i<obj.length;i++){
+        		html+="<option value="+obj[i].id+">"+obj[i].goodsname+"["+obj[i].size+"] </option>"
+        	}
+        	search_goodsid.html(html);
+        	form.render("select");
+        });
+        //查询
+        $("#doSearch").click(function(){
+            var params=$("#searchForm").serialize();
+            table.reload('outportListTable', {
+                url: '/outport/loadAllOutport?'+params
+            });
+        });
+    })
+    
+</script>
+</html>

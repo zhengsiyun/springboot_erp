@@ -1,0 +1,61 @@
+#数据源的配置
+spring:
+  datasource:
+    druid: 
+      url: jdbc:mysql://127.0.0.1:3306/erp?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: 123456
+      max-active: 20
+      initial-size: 5
+      max-wait: 5000
+      enable: true
+      filters: stat
+      validation-query: select 'x'
+      keep-alive: true
+      #监控
+      stat-view-servlet:
+        login-username: root
+        login-password: 123456
+        allow: ''
+        deny: ''
+        enabled: true  #启用
+        url-pattern: /druid/*
+      web-stat-filter:
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+        enabled: true
+        profile-enable: true
+        session-stat-enable: true
+        principal-session-name: USER_SESSION
+        principal-cookie-name: USER_COOKIE
+        url-pattern: /druid/*
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8     
+#mybatisplus的相关配置
+mybatis-plus:
+  mapper-locations:
+  - classpath:/mapper/*/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql
+  type-aliases-package: com.zsy.sys.domain,com.zsy.bus.domain
+  global-config:
+    db-config:
+#      table-prefix: sys_
+      id-type: auto
+
+#shiro的配置
+shiro:
+  hash-algorithm-name: md5
+  hash-iterations: 2
+  unauthorized-url: /unauthorized.html
+  anon-url:
+  - /
+  - /index.html*
+  - /login/login*
+  - /login/getCode*
+  - /resources/**
+  log-out-url: /login/logout
+  authc-url:
+  - /**
+      
