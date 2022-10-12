@@ -20,7 +20,7 @@
 		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<mybatisplus.version>3.1.2</mybatisplus.version>
 		<druid.version>1.1.18</druid.version>
-		<shiro.version>1.4.1</shiro.version>
+		<shiro.version>1.10.0</shiro.version>
 		<thymeleaf-extras-shiro.version>2.0.0</thymeleaf-extras-shiro.version>
 		<fastjson.version>1.2.59</fastjson.version>
 		<hutool.version>4.6.1</hutool.version>
